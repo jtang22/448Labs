@@ -13,6 +13,10 @@ public class SuffixTree {
 		public Node getIndex(int index) {
 			return this.array[index];
 		}
+		
+		public void setIndex(int index) {
+			this.array[index] = new Node();
+		}
 	}
 	
 	public SuffixTree() {
@@ -36,20 +40,40 @@ public class SuffixTree {
 			if ((next = node.getIndex(0)) != null) {
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
+			else {
+				node.setIndex(0);
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(0));
+				
+			}
 			break;
 		case 'T':
 			if ((next = node.getIndex(1)) != null) {
 				insertSuffix(suffix.substring(1, suffix.length()), next);
+			}
+			else {
+				node.setIndex(1);
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(1));
+				
 			}
 			break;
 		case 'G':
 			if ((next = node.getIndex(2)) != null) {
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
+			else {
+				node.setIndex(2);
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(2));
+				
+			}
 			break;
 		case 'C':
 			if ((next = node.getIndex(3)) != null) {
 				insertSuffix(suffix.substring(1, suffix.length()), next);
+			}
+			else {
+				node.setIndex(3);
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(3));
+				
 			}
 			break;
 		default:
@@ -64,22 +88,21 @@ public class SuffixTree {
 		if(node == null) {
 			return;
 		}
-		for(int i = 0; i < 4; i++) {
-			inOrder(node.getIndex(i));
-			switch(i) {
-			case 0:
-				System.out.println("A");
-				break;
-			case 1:
-				System.out.println("T");
-				break;
-			case 2:
-				System.out.println("G");
-				break;
-			case 3:
-				System.out.println("C");
-				break;
-			}
+		inOrder(node.getIndex(0));
+		if(node.getIndex(0) != null) {
+			System.out.print("A");
+		}
+		inOrder(node.getIndex(1));
+		if(node.getIndex(1) != null) {
+			System.out.print("T");
+		}
+		inOrder(node.getIndex(2));
+		if(node.getIndex(2) != null) {
+			System.out.print("G");
+		}	
+		inOrder(node.getIndex(3));
+		if(node.getIndex(3) != null) {
+			System.out.print("C");
 		}
 	}
 	
