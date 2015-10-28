@@ -5,9 +5,11 @@ public class SuffixTree {
 	//A - 0 T - 1 G - 2 C - 3
 	private class Node {
 		private Node[] array;
+		private int count;
 		
 		public Node() {
 			this.array = new Node[4];
+			this.count = 0;
 		}
 		
 		public Node getIndex(int index) {
@@ -16,6 +18,14 @@ public class SuffixTree {
 		
 		public void setIndex(int index) {
 			this.array[index] = new Node();
+		}
+		
+		public int getCount() {
+			return this.count;
+		}
+		
+		public void incrementCount() {
+			this.count++;
 		}
 	}
 	
@@ -31,6 +41,7 @@ public class SuffixTree {
 	
 	public void insertSuffix(String suffix, Node node) {
 		Node next;
+		
 		if (suffix.length() == 0) {
 			return;
 		} 
@@ -38,40 +49,48 @@ public class SuffixTree {
 		switch (suffix.charAt(0)) {
 		case 'A':
 			if ((next = node.getIndex(0)) != null) {
+				next.incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
 			else {
 				node.setIndex(0);
+				node.getIndex(0).incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(0));
 				
 			}
 			break;
 		case 'T':
 			if ((next = node.getIndex(1)) != null) {
+				next.incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
 			else {
 				node.setIndex(1);
+				node.getIndex(1).incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(1));
 				
 			}
 			break;
 		case 'G':
 			if ((next = node.getIndex(2)) != null) {
+				next.incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
 			else {
 				node.setIndex(2);
+				node.getIndex(2).incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(2));
 				
 			}
 			break;
 		case 'C':
 			if ((next = node.getIndex(3)) != null) {
+				next.incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), next);
 			}
 			else {
 				node.setIndex(3);
+				node.getIndex(3).incrementCount();
 				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(3));
 				
 			}
@@ -84,6 +103,7 @@ public class SuffixTree {
 	public void printTree() {
 		inOrder(root);
 	}
+	
 	public void inOrder(Node node) {
 		if(node == null) {
 			return;
@@ -106,8 +126,39 @@ public class SuffixTree {
 		}
 	}
 	
-//	public Node getRoot() {
-//		return this.root;
-//	}
+	/* Searches the tree for the provided suffix. 
+	 * If not found, return -1. Otherwise, return the number of times suffix was found.
+	 */
+	public int findSuffix(String suffix) {
+		char currentChar;
+		Node currentNode = root; 
+		
+		for (int i = 0; i < suffix.length(); i++) {
+			
+			currentChar = suffix.charAt(i);
+			switch (currentChar) {
+				case 'A': 
+					currentNode = currentNode.getIndex(0);
+					break;
+				case 'T': 
+					currentNode = currentNode.getIndex(1);
+					break;
+				case 'G':
+					currentNode = currentNode.getIndex(2);
+					break;
+				case 'C':
+					currentNode = currentNode.getIndex(3);
+					break;
+				default:
+					break;
+			}
+
+			// Couldn't find the next character in the tree, will not exist
+			if (currentNode == null) {
+				return -1;
+			}
+		}
+		return currentNode.getCount();
+	}
 	
 }
