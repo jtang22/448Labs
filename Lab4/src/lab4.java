@@ -67,12 +67,18 @@ public class lab4 {
 							// Check to see if we need to find reverse complement
 							if (reverseFlag == 'y') {
 								String reverseComp = reverseComplement(possibleStrings.get(i));
-								outputBufferWriter.write("Reverse matches: " + tree.findSuffix(reverseComp));
-								outputBufferWriter.newLine();
-								
-								// Print index of reverse match 
-								outputBufferWriter.write("" + dnaSequence.toString().indexOf(reverseComp));
-								outputBufferWriter.newLine();
+								if (tree.findSuffix(reverseComp) == -1) {
+									outputBufferWriter.write("Reverse matches: " + 0);
+									outputBufferWriter.newLine();
+								}
+								else {
+									outputBufferWriter.write("Reverse matches: " + tree.findSuffix(reverseComp));
+									outputBufferWriter.newLine();
+									
+									// Print index of reverse match 
+									outputBufferWriter.write("" + dnaSequence.toString().indexOf(reverseComp));
+									outputBufferWriter.newLine();
+								}
 							}
 						}
 					}	
