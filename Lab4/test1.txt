@@ -1,0 +1,2 @@
+>Testcase1
+AAATTTGGGCCC

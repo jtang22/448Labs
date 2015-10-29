@@ -33,13 +33,16 @@ public class SuffixTree {
 		this.root = new Node();
 	}
 	
-	public void createTree(String suffix) {
-		for (int i = 0; i < suffix.length(); i++) {
-			insertSuffix(suffix.substring(i, suffix.length()), this.root);
+	/* 
+	 * Creates our suffix tree through recursion.
+	 */
+	public void createTree(String entireSequence) {
+		for (int i = 0; i < entireSequence.length(); i++) {
+			insertSuffix(entireSequence.substring(i, entireSequence.length()), this.root);
 		}
 	}
 	
-	public void insertSuffix(String suffix, Node node) {
+	private void insertSuffix(String suffix, Node node) {
 		Node next;
 		
 		if (suffix.length() == 0) {
@@ -104,7 +107,7 @@ public class SuffixTree {
 		inOrder(root);
 	}
 	
-	public void inOrder(Node node) {
+	private void inOrder(Node node) {
 		if(node == null) {
 			return;
 		}
