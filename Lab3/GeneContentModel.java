@@ -62,9 +62,6 @@ public class GeneContentModel {
                 // Found a gene to start working with
                 if (feature.equals("stop_codon") || feature.equals("start_codon")) {
                 	
-                	// Increment total # gene count
-                	geneCount++;
-                	
                 	// Skip start
                 	lineScanner.next();
                 	// Skip end
@@ -119,13 +116,17 @@ public class GeneContentModel {
                     // Get the number of nucleotides from the start and end range
                     int numberNucleosInGene = Math.abs(startGene - endGene) + 1;
                     if (endGene > lastNucleoNumber && startGene > lastNucleoNumber) {
+                    	
+                    	// Increment total # gene count
+                    	geneCount++;
+                    	
                     	lastNucleoNumber = endGene;
                     	// Count the nucleotides, because we don't have to ignore it
                     	totalNumberOfNucleos += numberNucleosInGene;
                         csvBufferedWriter.write(geneCount + ", " + startGene + ", " + endGene);
                         csvBufferedWriter.newLine();
-                		//System.out.println("Start: " + startGene);
-                		//System.out.println("End: " + endGene);
+                		System.out.println("Start: " + startGene);
+                		System.out.println("End: " + endGene);
                         System.out.println("# of Nucleotides in gene: " + Math.abs(numberNucleosInGene));
                     	System.out.println("Total # of Nucleotides from all genes: " + totalNumberOfNucleos);
                     }
@@ -134,10 +135,14 @@ public class GeneContentModel {
                 }
             }
             
-            txtBufferedWriter.write("Sequence Name: " + seqName + "\n");
-            txtBufferedWriter.write("Number of Genes: " + geneCount + "\n");
-            txtBufferedWriter.write("Total Length of Sequence: " + fastaLen + "\n");
-            txtBufferedWriter.write("Total Length of Nucleotides in Genes: " + totalNumberOfNucleos + "\n");
+            txtBufferedWriter.write("Sequence Name: " + seqName);
+            txtBufferedWriter.newLine();
+            txtBufferedWriter.write("Number of Genes: " + geneCount);
+            txtBufferedWriter.newLine();
+            txtBufferedWriter.write("Total Length of Sequence: " + fastaLen);
+            txtBufferedWriter.newLine();
+            txtBufferedWriter.write("Total Length of Nucleotides in Genes: " + totalNumberOfNucleos);
+            txtBufferedWriter.newLine();
             // System.out.println("\n\n------------SUMMARY-------------");
             // System.out.println("# of nucleotides in all genes: " + totalNumberOfNucleos);
             // System.out.println("# of nucleotides in FASTA: " + fastaLen);
@@ -145,17 +150,20 @@ public class GeneContentModel {
             
             // Calculate average gene size and print
             double avgFraction = getAverageGeneSize(totalNumberOfNucleos, geneCount);
-            txtBufferedWriter.write("Average gene size: " + avgFraction + "\n");
+            txtBufferedWriter.write("\nAverage gene size: " + avgFraction);
+            txtBufferedWriter.newLine();
             
             // Calculate gene nucleotide fraction and print
             double geneNucFraction = getGeneNucleotideFraction(totalNumberOfNucleos, fastaLen);
             DecimalFormat formatter = new DecimalFormat("0.000");
-            txtBufferedWriter.write("Gene nucleotide fraction: " + formatter.format(geneNucFraction) + "%\n");
+            txtBufferedWriter.write("\nGene nucleotide fraction: " + formatter.format(geneNucFraction) + "%");
+            txtBufferedWriter.newLine();
             
             // Calculate relative gene coverage and print
             double relativeGene = getRelativeGeneCoverage(totalNumberOfNucleos, geneCount, fastaLen);
 
-            txtBufferedWriter.write("Relative gene coverage: " + formatter.format(relativeGene) + "%\n");
+            txtBufferedWriter.write("\nRelative gene coverage: " + formatter.format(relativeGene) + "%");
+            txtBufferedWriter.newLine();
 
             csvBufferedWriter.close();
             txtBufferedWriter.close();
