@@ -108,23 +108,23 @@ public class SuffixTree {
 	}
 	
 	private void inOrder(Node node) {
-		if(node == null) {
+		if (node == null) {
 			return;
 		}
 		inOrder(node.getIndex(0));
-		if(node.getIndex(0) != null) {
+		if (node.getIndex(0) != null) {
 			System.out.print("A");
 		}
 		inOrder(node.getIndex(1));
-		if(node.getIndex(1) != null) {
+		if (node.getIndex(1) != null) {
 			System.out.print("T");
 		}
 		inOrder(node.getIndex(2));
-		if(node.getIndex(2) != null) {
+		if (node.getIndex(2) != null) {
 			System.out.print("G");
 		}	
 		inOrder(node.getIndex(3));
-		if(node.getIndex(3) != null) {
+		if (node.getIndex(3) != null) {
 			System.out.print("C");
 		}
 	}

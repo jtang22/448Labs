@@ -14,14 +14,16 @@ public class lab4 {
 		System.out.println("Enter query file: "); 
 		File queryFile = new File(fileScanner.next());
 		
+		System.out.println("Do you want to reverse compliment: (y/n)");
+		char reverseFlag = fileScanner.next().charAt(0);
+		
 		try {
 			// Initialize input scanners
 			Scanner fafstaScanner = new Scanner(fafstaFile);
 			Scanner queryScanner = new Scanner(queryFile);
 			
-		    
-		    // Initialize output writers
-            String outputFile = fafstaFile.getName().replace (".txt", ("Matches.txt"));
+			// Initialize output writers
+			String outputFile = fafstaFile.getName().replace (".txt", ("Matches.txt"));
             Writer outputWriter = new FileWriter(outputFile);
             BufferedWriter outputBufferWriter = new BufferedWriter(outputWriter);
 			
@@ -61,11 +63,24 @@ public class lab4 {
 							// Print index of the match
 							outputBufferWriter.write("" + dnaSequence.toString().indexOf(possibleStrings.get(i)));
 							outputBufferWriter.newLine();
+							
+							// Check to see if we need to find reverse complement
+							if (reverseFlag == 'y') {
+								String reverseComp = reverseComplement(possibleStrings.get(i));
+								outputBufferWriter.write("Reverse matches: " + tree.findSuffix(reverseComp));
+								outputBufferWriter.newLine();
+								
+								// Print index of reverse match 
+								outputBufferWriter.write("" + dnaSequence.toString().indexOf(reverseComp));
+								outputBufferWriter.newLine();
+							}
 						}
 					}	
 				}
 			}
 			
+			fafstaScanner.close();
+			queryScanner.close();
 			outputBufferWriter.close();
 			outputWriter.close();
 		}
@@ -76,6 +91,27 @@ public class lab4 {
 			System.out.println("Error occurred, cannot write to file.");
 		}
 		
+	}
+	
+	/*
+	 * Helper method for reverse complementing a query sequence string
+	 */
+	private static String reverseComplement(String strand) {
+		StringBuilder revComp = new StringBuilder();
+		char[] dna = strand.toCharArray();
+		for (int i = 0; i < strand.length(); i++) {
+			
+			if (dna[i] == 'A')
+				revComp.append("T");
+			else if (dna[i] == 'T')
+				revComp.append("A");
+			else if (dna[i] == 'C')
+				revComp.append("G");
+			else
+				revComp.append("C");
+		}
+		
+		return revComp.reverse().toString(); 
 	}
 	
 	/* Looks to see if special characters occur only twice.

@@ -1,3 +1,5 @@
 >Query
 Matches: 1
 0
+Reverse matches: -1
+-1
