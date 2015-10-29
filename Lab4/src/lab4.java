@@ -57,21 +57,21 @@ public class lab4 {
 					if (possibleStrings != null) {
 						// Go through each possible sequence and see if it exists
 						for (int i = 0; i < possibleStrings.size(); i++) {
-							outputBufferWriter.write("Matches: " + tree.findSuffix(possibleStrings.get(i)));
-							outputBufferWriter.newLine();
-							
-							// Print index of the match
-							outputBufferWriter.write("" + dnaSequence.toString().indexOf(possibleStrings.get(i)));
-							outputBufferWriter.newLine();
+							// Check to see if query is in dnaseq
+							if (tree.findSuffix(possibleStrings.get(i)) != -1) {
+								outputBufferWriter.write("Matches: " + tree.findSuffix(possibleStrings.get(i)));
+								outputBufferWriter.newLine();
+								
+								// Print index of the match
+								outputBufferWriter.write("" + dnaSequence.toString().indexOf(possibleStrings.get(i)));
+								outputBufferWriter.newLine();	
+							}
 							
 							// Check to see if we need to find reverse complement
 							if (reverseFlag == 'y') {
 								String reverseComp = reverseComplement(possibleStrings.get(i));
-								if (tree.findSuffix(reverseComp) == -1) {
-									outputBufferWriter.write("Reverse matches: " + 0);
-									outputBufferWriter.newLine();
-								}
-								else {
+								// Found a reverse matche
+								if (tree.findSuffix(reverseComp) != -1) {
 									outputBufferWriter.write("Reverse matches: " + tree.findSuffix(reverseComp));
 									outputBufferWriter.newLine();
 									
