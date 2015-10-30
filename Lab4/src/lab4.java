@@ -70,7 +70,7 @@ public class lab4 {
 							// Check to see if we need to find reverse complement
 							if (reverseFlag == 'y') {
 								String reverseComp = reverseComplement(possibleStrings.get(i));
-								// Found a reverse matche
+								// Found a reverse match
 								if (tree.findSuffix(reverseComp) != -1) {
 									outputBufferWriter.write("Reverse matches: " + tree.findSuffix(reverseComp));
 									outputBufferWriter.newLine();
