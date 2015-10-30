@@ -1,2 +1,4 @@
 >Query
 ATA
+>Query2
+ATG
