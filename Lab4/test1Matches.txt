@@ -1,4 +1,4 @@
 >Query
-Matches: 1
-0
-Reverse matches: 0
+Matches: 2
+1
+3

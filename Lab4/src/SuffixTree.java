@@ -3,6 +3,7 @@ import java.util.*;
 public class SuffixTree {
 
 	private Node root; 
+	private ArrayList<Integer> lastSuffixLocations;
 	
 	//A - 0 T - 1 G - 2 C - 3
 	private class Node {
@@ -26,6 +27,10 @@ public class SuffixTree {
 		
 		public void setLocation(int location) {
 			this.locationNdxes.add(location);
+		}
+		
+		public ArrayList<Integer> getLocations() {
+			return this.locationNdxes;
 		}
 		
 		public int getCount() {
@@ -174,14 +179,17 @@ public class SuffixTree {
 
 			// Couldn't find the next character in the tree, will not exist
 			if (currentNode == null) {
+				this.lastSuffixLocations = null;
 				return -1;
 			}
 		}
+		
+		this.lastSuffixLocations = currentNode.getLocations();
 		return currentNode.getCount();
 	}
 	
-	public ArrayList<Integer> getLocations(String suffix) {
-		
+	public ArrayList<Integer> getLocations() {
+		return this.lastSuffixLocations;
 	}
 	
 }

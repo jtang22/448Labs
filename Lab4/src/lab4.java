@@ -56,6 +56,7 @@ public class lab4 {
 					ArrayList<String> possibleStrings = substituteCharacters(currentQuery);
 					if (possibleStrings != null) {
 						// Go through each possible sequence and see if it exists
+						//System.out.println(possibleStrings.size());
 						for (int i = 0; i < possibleStrings.size(); i++) {
 							// Check to see if query is in dnaseq
 							if (tree.findSuffix(possibleStrings.get(i)) != -1) {
@@ -63,8 +64,12 @@ public class lab4 {
 								outputBufferWriter.newLine();
 								
 								// Print index of the match
-								outputBufferWriter.write("" + dnaSequence.toString().indexOf(possibleStrings.get(i)));
-								outputBufferWriter.newLine();	
+								ArrayList<Integer> indexLocations = tree.getLocations();
+								for (int j = 0; j < indexLocations.size(); j++) {
+									//System.out.println("writing: " + (indexLocations.get(j) + 1));
+									outputBufferWriter.write("" + (indexLocations.get(j) + 1));
+									outputBufferWriter.newLine();	
+								}
 							}
 							
 							// Check to see if we need to find reverse complement
@@ -76,8 +81,11 @@ public class lab4 {
 									outputBufferWriter.newLine();
 									
 									// Print index of reverse match 
-									outputBufferWriter.write("" + dnaSequence.toString().indexOf(reverseComp));
-									outputBufferWriter.newLine();
+									ArrayList<Integer> indexLocations = tree.getLocations();
+									for (int j = 0; j < indexLocations.size(); j++) {
+										outputBufferWriter.write("" + (indexLocations.get(j) + 1));
+										outputBufferWriter.newLine();
+									}
 								}
 							}
 						}
