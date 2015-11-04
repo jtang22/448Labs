@@ -44,6 +44,7 @@ public class SuffixTree {
 	
 	public SuffixTree() {
 		this.root = new Node();
+
 	}
 	
 	/* 
@@ -62,18 +63,20 @@ public class SuffixTree {
 			return;
 		} 
 
+		//System.out.println("char: " + suffix.charAt(0) + " index: " + index);
 		switch (suffix.charAt(0)) {
 		case 'A':
 			if ((next = node.getIndex(0)) != null) {
 				next.setLocation(index);
 				next.incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), next, index++);
+				insertSuffix(suffix.substring(1, suffix.length()), next, index + 1);
 			}
 			else {
-				node.setLocation(index);
 				node.setIndex(0);
-				node.getIndex(0).incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(0), index++);
+				next = node.getIndex(0);
+				next.setLocation(index);
+				next.incrementCount();
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(0), index + 1);
 				
 			}
 			break;
@@ -81,13 +84,14 @@ public class SuffixTree {
 			if ((next = node.getIndex(1)) != null) {
 				next.setLocation(index);
 				next.incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), next, index++);
+				insertSuffix(suffix.substring(1, suffix.length()), next, index + 1);
 			}
 			else {
-				node.setLocation(index);
 				node.setIndex(1);
-				node.getIndex(1).incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(1), index++);
+				next = node.getIndex(1);
+				next.setLocation(index);
+				next.incrementCount();
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(1), index + 1);
 				
 			}
 			break;
@@ -95,13 +99,14 @@ public class SuffixTree {
 			if ((next = node.getIndex(2)) != null) {
 				next.setLocation(index);
 				next.incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), next, index++);
+				insertSuffix(suffix.substring(1, suffix.length()), next, index + 1);
 			}
 			else {
-				node.setLocation(index);
 				node.setIndex(2);
-				node.getIndex(2).incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(2), index++);
+				next = node.getIndex(2);
+				next.setLocation(index);
+				next.incrementCount();
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(2), index + 1);
 				
 			}
 			break;
@@ -109,13 +114,14 @@ public class SuffixTree {
 			if ((next = node.getIndex(3)) != null) {
 				next.setLocation(index);
 				next.incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), next, index++);
+				insertSuffix(suffix.substring(1, suffix.length()), next, index + 1);
 			}
 			else {
-				node.setLocation(index);
 				node.setIndex(3);
-				node.getIndex(3).incrementCount();
-				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(3), index++);
+				next = node.getIndex(3);
+				next.setLocation(index);
+				next.incrementCount();
+				insertSuffix(suffix.substring(1, suffix.length()), node.getIndex(3), index + 1);
 				
 			}
 			break;
@@ -155,7 +161,7 @@ public class SuffixTree {
 	 */
 	public int findSuffix(String suffix) {
 		char currentChar;
-		Node currentNode = root; 
+		Node currentNode = root;
 		
 		for (int i = 0; i < suffix.length(); i++) {
 			
@@ -183,7 +189,9 @@ public class SuffixTree {
 				return -1;
 			}
 		}
-		
+		for (int i = 0; i < currentNode.getLocations().size(); i++) {
+			System.out.println(currentNode.getLocations().get(i));
+		}
 		this.lastSuffixLocations = currentNode.getLocations();
 		return currentNode.getCount();
 	}
