@@ -27,7 +27,7 @@ public class Lab4Dialog extends JPanel implements ActionListener{
     }
 
     private static void runGUI() {
-        JFrame frame = new JFrame("Gene Content Calculator");
+        JFrame frame = new JFrame("Gene Match Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new Lab4Dialog());
 
