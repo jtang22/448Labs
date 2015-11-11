@@ -6,19 +6,11 @@ public class Lab4 {
 	public int seqSearch(File fafstaFile, File queryFile, char reverseFlag) {
 			
 		SuffixTree tree = new SuffixTree();
-		// Scanner fileScanner = new Scanner(System.in);
 		int matches = 0, reverseMatches = 0;
 		ArrayList<Integer> indexLocations = new ArrayList<Integer>();
 		ArrayList<Integer> reverseIndexLocations = new ArrayList<Integer>();
+		ArrayList<String> queryList = new ArrayList<String>();
 
-		// System.out.println("Enter FAFSTA file: ");
-		// File fafstaFile = new File(fileScanner.next());
-		
-		// System.out.println("Enter query file: "); 
-		// File queryFile = new File(fileScanner.next());
-		
-		// System.out.println("Do you want to reverse compliment: (y/n)");
-		// char reverseFlag = fileScanner.next().charAt(0);
 		try {
 			// Initialize input scanners
 			Scanner fafstaScanner = new Scanner(fafstaFile);
@@ -36,69 +28,75 @@ public class Lab4 {
 			while (fafstaScanner.hasNextLine()) {
 				dnaSequence.append(fafstaScanner.nextLine());
 			}
-			
-			// Creates the initial suffix tree
-			tree.createTree(dnaSequence.toString());
-			
+
 			// Goes through the query file
 			String currentQuery = "";
 			String lastComment = "";
-			while (queryScanner.hasNextLine()) {
-				// currentQuery is the query sequence and is not a comment
+			int longestQueryLength = 0;
+			while(queryScanner.hasNextLine()) {
 				currentQuery = queryScanner.nextLine();
-				matches = 0;
-				reverseMatches = 0;
-				indexLocations.clear();
-				reverseIndexLocations.clear();
 
-                System.out.println("String: " + currentQuery);
-                
 				// Line is a comment
 				if (currentQuery.charAt(0) == '>') {
 					lastComment = currentQuery;
 					outputBufferWriter.write(lastComment);
 					outputBufferWriter.newLine();
 				}
-				// Line is a query sequence
 				else {
-					ArrayList<String> possibleStrings = substituteCharacters(currentQuery);
-					if (possibleStrings != null) {
-						// Go through each possible sequence and see if it exists
-						//System.out.println(possibleStrings.size());
-						for (int i = 0; i < possibleStrings.size(); i++) {
-							// Check to see if query is in dnaseq
-							if (tree.findSuffix(possibleStrings.get(i)) != -1) {
-								matches += tree.findSuffix(possibleStrings.get(i));
-								
-								// Print index of the match
-								indexLocations.addAll(tree.getLocations());
-							}
+					queryList.add(currentQuery);
+					if(currentQuery.length() > longestQueryLength) {
+						longestQueryLength = currentQuery.length();
+					}
+				}
+			}
 
-							if(reverseFlag == 'y') {
-								String reverseComp = reverseComplement(possibleStrings.get(i));
-								if (tree.findSuffix(reverseComp) != -1) {
-									reverseMatches += tree.findSuffix(reverseComp);
-								
-									// Print index of reverse match 
-									reverseIndexLocations.addAll(tree.getLocations());
-								}
-							}
+			// Creates the initial suffix tree
+			tree.createTree(dnaSequence.toString(), longestQueryLength);
 
-						}
-                        
-						outputBufferWriter.write("Matches : " + matches + "\n");
-						for (int j = 0; j < indexLocations.size(); j++) {
-							outputBufferWriter.write("" + ((indexLocations.get(j) + 1) -  (currentQuery.length() - 1)) + "\n");
+			for(int ndx = 0; ndx < queryList.size(); ndx++) {
+				// currentQuery is the query sequence and is not a comment
+				currentQuery = queryList.get(ndx);
+				matches = 0;
+				reverseMatches = 0;
+				indexLocations.clear();
+				reverseIndexLocations.clear();
+                
+				ArrayList<String> possibleStrings = substituteCharacters(currentQuery);
+				if (possibleStrings != null) {
+					// Go through each possible sequence and see if it exists
+					for (int i = 0; i < possibleStrings.size(); i++) {
+						// Check to see if query is in dnaseq
+						if (tree.findSuffix(possibleStrings.get(i)) != -1) {
+							matches += tree.findSuffix(possibleStrings.get(i));
+							
+							// Print index of the match
+							indexLocations.addAll(tree.getLocations());
 						}
 
 						if(reverseFlag == 'y') {
-							outputBufferWriter.write("Reverse Matches : " + reverseMatches + "   REVERSE \n");
-							for (int j = 0; j < reverseIndexLocations.size(); j++) {
-								outputBufferWriter.write("" + ((reverseIndexLocations.get(j) + 1) - (currentQuery.length() - 1))+ "\n");
+							String reverseComp = reverseComplement(possibleStrings.get(i));
+							if (tree.findSuffix(reverseComp) != -1) {
+								reverseMatches += tree.findSuffix(reverseComp);
+							
+								// Print index of reverse match 
+								reverseIndexLocations.addAll(tree.getLocations());
 							}
 						}
-						outputBufferWriter.newLine();
+
 					}
+                    
+					outputBufferWriter.write("Matches : " + matches + "\n");
+					for (int j = 0; j < indexLocations.size(); j++) {
+						outputBufferWriter.write("" + ((indexLocations.get(j) + 1) -  (currentQuery.length() - 1)) + "\n");
+					}
+
+					if(reverseFlag == 'y') {
+						outputBufferWriter.write("Reverse Matches : " + reverseMatches + "\n");
+						for (int j = 0; j < reverseIndexLocations.size(); j++) {
+							outputBufferWriter.write("" + ((reverseIndexLocations.get(j) + 1) - (currentQuery.length() - 1))+ "\n");
+						}
+					}
+					outputBufferWriter.newLine();
 				}
 			}
 			outputBufferWriter.flush();
@@ -108,12 +106,10 @@ public class Lab4 {
 			outputWriter.close();
 		}
 		catch (FileNotFoundException e) {
-			System.out.println("File(s) not found.");
 			return 1;
 
 		}
 		catch (IOException e) {
-			System.out.println("Error occurred, cannot write to file.");
 			return 1;
 
 		}

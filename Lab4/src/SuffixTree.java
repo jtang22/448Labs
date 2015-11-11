@@ -50,9 +50,15 @@ public class SuffixTree {
 	/* 
 	 * Creates our suffix tree through recursion.
 	 */
-	public void createTree(String entireSequence) {
+	public void createTree(String entireSequence, int length) {
 		for (int i = 0; i < entireSequence.length(); i++) {
-			insertSuffix(entireSequence.substring(i, entireSequence.length()), this.root, i);
+
+			if(length + i >= entireSequence.length()) {
+				insertSuffix(entireSequence.substring(i, entireSequence.length()), this.root, i);
+			}
+			else {
+				insertSuffix(entireSequence.substring(i, i + length), this.root, i);
+			}
 		}
 	}
 	
