@@ -22,7 +22,7 @@ public class CpGFinder {
 	private int island;
 
 	public static void main(String[] args) {
-		readFile(new File(args[0]);
+		readFile(new File(args[0]));
 		bufferedWriter = null;
 		fileWriter = null;
 		try {
