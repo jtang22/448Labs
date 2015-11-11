@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 public class CpGFinder {
 	//Scan in file for reading
-	private int window = 200;
+	private int windowSize = 200;
 	private int stepSize = 1;
 	private int cpgCount;
 	private int cCount;
@@ -20,29 +20,33 @@ public class CpGFinder {
 	private double gcContent;
 	private double cpgRatio;
 	private int island;
+	
+	public CpGFinder() {
+		this.bufferedWriterCSV = null;
+		this.fileWriterCSV = null;
+		this.bufferedWriterTXT = null;
+		this.fileWriterTXT = null;
+	}
 
-	public static void main(String[] args) {
-		CpGFinder finder = new CpGFinder();
-		bufferedWriterCSV = null;
-		fileWriterCSV = null;
-		bufferedWriterTXT = null;
-		fileWriterTXT = null;
-
-		finder.readFile(new File(args[0]));
+	public void setupWriters(String filename) {
 		try {
 			String outputFile = filename.replace(".txt", ("_CpG.csv"));
-			fileWriterCSV = new FileWriter(outputFile);
-			bufferedWriterCSV = new BufferedWriter(fileWriterCSV);
+			this.fileWriterCSV = new FileWriter(outputFile);
+			this.bufferedWriterCSV = new BufferedWriter(fileWriterCSV);
 
 			outputFile = filename.replace(".txt", ("_CpG.txt"));
-			fileWriterTXT = new FileWriter(outputFile);
-			bufferedWriterTXT = new BufferedWriter(fileWriterTXT);
-
-			finder.findCpGIsland();	
-		}
-		catch (FileNotFoundException e) {
+			this.fileWriterTXT = new FileWriter(outputFile);
+			this.bufferedWriterTXT = new BufferedWriter(fileWriterTXT);
+		} catch (IOException e) {
 			System.out.println("File not found");
 		}
+	}
+	
+	public static void main(String[] args) {
+		CpGFinder finder = new CpGFinder();
+		finder.readFile(new File(args[0]));
+		finder.setupWriters(args[0]);
+		finder.findCpGIsland();	
 	}
 
 	private int readFile(File file) {
@@ -57,13 +61,14 @@ public class CpGFinder {
 				}
 			}
 			dnaSeq = dnaSeq.toUpperCase();
+			scan.close();
 		} catch (FileNotFoundException e) {
 			return 0;
 		}
 		return 1;
 	}
 
-	private void findCpGIsland() {
+	public void findCpGIsland() {
 		int startNdx = 0;
 		int gcContentLen = 0;
 		remainderLen = 0;
@@ -92,8 +97,10 @@ public class CpGFinder {
 				}
 			}
 			//calculates gcContent
-			gcContent = ((double)(gCount + cCount) / gcContentLen);
-			cpgRatio = observedCpG() / expectedCpG();
+			gcContent = ((double)(gCount + cCount) / windowSize);
+			//System.out.println("cCount: " + cCount + " gCount: " + gCount  + " windowSize: " + windowSize);
+			//System.out.println("gccontent: " + gcContent + "observed: " + observedCpG() + "expected: " + expectedCpG() + "\n");
+			cpgRatio = (observedCpG() / expectedCpG());
 			if(gcContent > .5 && cpgRatio > .6) {
 				island = 1;
 			}
@@ -111,11 +118,11 @@ public class CpGFinder {
 	}
 
 	private double expectedCpG() {
-		return (cCount / windowSize) * (gCount / windowSize);
+		return ((double)cCount / windowSize) * ((double)gCount / windowSize);
 	}
 
 	private double observedCpG() {
-		return (cpgCount * windowSize) / (cCount * gCount);
+		return (double)(cpgCount * windowSize) / (cCount * gCount);
 	}
 
 	private void countN() {
@@ -129,10 +136,17 @@ public class CpGFinder {
 
 	private void writeFile(int startNdx) {
 		DecimalFormat formatter = new DecimalFormat("0.00000");
-		bufferedWriterCSV.write(startNdx + ", " + formatter.format(gcContent) + "%, " + formatter.format(cpgRatio) + ", 0.6, " + island + ", 0.5");
-		bufferedWriterCSV.newLine();
-		if(island == 1) {
-			bufferedWriterTXT.write("CpG island in region " + starNdx + " to " + (startNdx + windowSize) + " (Obs/Exp = " + formatter.format(cpgRatio) + ", %GC = " + formatter.format(gcContent) + ")");
-		}	
+		try {
+			bufferedWriterCSV.write(startNdx + ", " + formatter.format(gcContent) + ", " + formatter.format(cpgRatio) + ", 0.6, " + island + ", 0.5");
+			bufferedWriterCSV.newLine();
+			bufferedWriterCSV.flush();
+			if(island == 1) {
+				bufferedWriterTXT.write("CpG island in region " + startNdx + " to " + (startNdx + windowSize) + " (Obs/Exp = " + formatter.format(cpgRatio) + ", %GC = " + formatter.format(gcContent) + ")\n");
+				bufferedWriterTXT.flush();
+			}	
+		}
+		catch (IOException e) {
+			System.out.println("Could not write to file");
+		}
 	}
 }
