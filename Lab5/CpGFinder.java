@@ -22,17 +22,23 @@ public class CpGFinder {
 	private int island;
 
 	public static void main(String[] args) {
-		readFile(new File(args[0]));
-		bufferedWriter = null;
-		fileWriter = null;
+		CpGFinder finder = new CpGFinder();
+		bufferedWriterCSV = null;
+		fileWriterCSV = null;
+		bufferedWriterTXT = null;
+		fileWriterTXT = null;
+
+		finder.readFile(new File(args[0]));
 		try {
 			String outputFile = filename.replace(".txt", ("_CpG.csv"));
 			fileWriterCSV = new FileWriter(outputFile);
-			bufferedWriterCSV = new BufferedWriter(fileWriter);
+			bufferedWriterCSV = new BufferedWriter(fileWriterCSV);
 
 			outputFile = filename.replace(".txt", ("_CpG.txt"));
 			fileWriterTXT = new FileWriter(outputFile);
-			bufferedWriterTXT = new BufferedWriter(fileWriter);			
+			bufferedWriterTXT = new BufferedWriter(fileWriterTXT);
+
+			finder.findCpGIsland();	
 		}
 		catch (FileNotFoundException e) {
 			System.out.println("File not found");
