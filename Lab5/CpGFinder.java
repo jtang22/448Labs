@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import javax.swing.*;
 import java.text.DecimalFormat;
 
 public class CpGFinder {
@@ -22,13 +23,10 @@ public class CpGFinder {
 	private int island;
 	
 	public CpGFinder() {
-		this.bufferedWriterCSV = null;
-		this.fileWriterCSV = null;
-		this.bufferedWriterTXT = null;
-		this.fileWriterTXT = null;
+		reset();
 	}
 
-	public void setupWriters(String filename) {
+	private void setupWriters(String filename) {
 		try {
 			String outputFile = filename.replace(".txt", ("_CpG.csv"));
 			this.fileWriterCSV = new FileWriter(outputFile);
@@ -38,15 +36,22 @@ public class CpGFinder {
 			this.fileWriterTXT = new FileWriter(outputFile);
 			this.bufferedWriterTXT = new BufferedWriter(fileWriterTXT);
 		} catch (IOException e) {
-			System.out.println("File not found");
+			JOptionPane.showMessageDialog(null, "File not found");
 		}
 	}
 	
-	public static void main(String[] args) {
-		CpGFinder finder = new CpGFinder();
-		finder.readFile(new File(args[0]));
-		finder.setupWriters(args[0]);
-		finder.findCpGIsland();	
+	public void run(File file) {
+		reset();
+		readFile(file);
+		setupWriters(file.getName());
+		findCpGIsland();
+	}
+
+	public void reset() {
+		this.bufferedWriterCSV = null;
+		this.fileWriterCSV = null;
+		this.bufferedWriterTXT = null;
+		this.fileWriterTXT = null;
 	}
 
 	private int readFile(File file) {
@@ -68,7 +73,7 @@ public class CpGFinder {
 		return 1;
 	}
 
-	public void findCpGIsland() {
+	private void findCpGIsland() {
 		int startNdx = 0;
 		int gcContentLen = 0;
 		remainderLen = 0;
@@ -137,7 +142,11 @@ public class CpGFinder {
 	private void writeFile(int startNdx) {
 		DecimalFormat formatter = new DecimalFormat("0.00000");
 		try {
-			bufferedWriterCSV.write(startNdx + ", " + formatter.format(gcContent) + ", " + formatter.format(cpgRatio) + ", 0.6, " + island + ", 0.5");
+			if((cCount * gCount) == 0) {
+				bufferedWriterCSV.write(startNdx + ", " + formatter.format(gcContent) + ", undefined, 0.6, " + island + ", 0.5");
+			} else {
+				bufferedWriterCSV.write(startNdx + ", " + formatter.format(gcContent) + ", " + formatter.format(cpgRatio) + ", 0.6, " + island + ", 0.5");
+			}
 			bufferedWriterCSV.newLine();
 			bufferedWriterCSV.flush();
 			if(island == 1) {
@@ -146,7 +155,7 @@ public class CpGFinder {
 			}	
 		}
 		catch (IOException e) {
-			System.out.println("Could not write to file");
+			JOptionPane.showMessageDialog(null, "Could not write to file");
 		}
 	}
 }
